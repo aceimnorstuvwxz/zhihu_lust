@@ -24,7 +24,21 @@ function hack_zhihu_get_xsrf()
   return rf;
 }
 
-function hack_zhihu_get_all_answer_ids()
+// 在feed界面
+function hack_zhihu_get_all_answer_ids_b()
+{
+  anslist = $(".entry-body");
+  console.log(anslist.length)
+  var ret = [];
+  for (var i = 0; i < anslist.length; i++) {
+    var aid = anslist[i].getAttribute("data-aid");
+    ret.push(aid);
+  }
+  return ret;
+}
+
+// 在具体问题界面
+function hack_zhihu_get_all_answer_ids_a()
 {
   anslist = $(".zm-item-answer");
   console.log(anslist.length)
@@ -35,6 +49,17 @@ function hack_zhihu_get_all_answer_ids()
     console.log(aid);
   }
   return ret;
+}
+
+function hack_zhihu_get_all_answer_ids()
+{
+    var ret = hack_zhihu_get_all_answer_ids_a();
+    if (ret.length == 0) {
+      ret = hack_zhihu_get_all_answer_ids_b();
+    }
+
+    console.log("length of aids=" + ret.length);
+    return ret;
 }
 
 function hack_zhihu_likeall()
@@ -49,9 +74,10 @@ function hack_zhihu_likeall()
 
 chrome.runtime.onMessage.addListener(function(request, sender, callback) {
   console.log(request);
-  hack_zhihu_likeall();
+  // hack_zhihu_likeall();
 });
 
-
-// automatic like all!
 hack_zhihu_likeall();
+setInterval(hack_zhihu_likeall, 30000);
+// automatic like all!
+// hack_zhihu_likeall();
