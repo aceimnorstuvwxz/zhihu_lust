@@ -1,4 +1,4 @@
-alert("hello world!");
+//alert("hello world!");
 
 
 function hack_zhihu_like(answer_id, xsrf)
@@ -27,17 +27,31 @@ function hack_zhihu_get_xsrf()
 function hack_zhihu_get_all_answer_ids()
 {
   anslist = $(".zm-item-answer");
-  for (ansobj in anslist)
-  {
-    console.log(ansobj.attr("data-aid"));// here
+  console.log(anslist.length)
+  var ret = [];
+  for (var i = 0, l = anslist.length; i < l; i++) {
+    var aid = anslist[i].getAttribute("data-aid");
+    ret.push(aid);
+    console.log(aid);
   }
-  // console.log(listtt);
-  console.log(ppp);
+  return ret;
+}
+
+function hack_zhihu_likeall()
+{
+  var xsrf = hack_zhihu_get_xsrf();
+  var aids = hack_zhihu_get_all_answer_ids();
+  console.log("aid list size="+aids.length);
+  for (var i = 0; i < aids.length; i++) {
+    hack_zhihu_like(aids[i], xsrf);
+  }
 }
 
 chrome.runtime.onMessage.addListener(function(request, sender, callback) {
   console.log(request);
-  var xsrf = hack_zhihu_get_xsrf();
-  hack_zhihu_like("17679778", xsrf);
-  hack_zhihu_get_all_answer_ids();
+  hack_zhihu_likeall();
 });
+
+
+// automatic like all!
+hack_zhihu_likeall();
